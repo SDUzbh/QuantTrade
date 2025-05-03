@@ -1,26 +1,22 @@
 """
-回测结果指标计算模块
+回测指标计算实现
 """
 
 import pandas as pd
+import numpy as np
 
 
 def compute_total_return(nav: pd.Series) -> float:
-    """
-    计算总收益
-    """
-    pass
+    return nav.iloc[-1] / nav.iloc[0] - 1
 
 
 def compute_annualized_return(nav: pd.Series, periods_per_year: int = 252) -> float:
-    """
-    计算年化收益
-    """
-    pass
+    total_return = compute_total_return(nav)
+    n_periods = len(nav)
+    return (1 + total_return) ** (periods_per_year / n_periods) - 1
 
 
 def compute_max_drawdown(nav: pd.Series) -> float:
-    """
-    计算最大回撤
-    """
-    pass
+    rolling_max = nav.cummax()
+    drawdown = (nav - rolling_max) / rolling_max
+    return drawdown.min()
